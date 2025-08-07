@@ -1,0 +1,137 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Created by https://www.toptal.com/developers/gitignore/api/android,androidstudio,gradle
+# Edit at https://www.toptal.com/developers/gitignore?templates=android,androidstudio,gradle
+
+### Android ###
+# Build artifacts
+*.apk
+*.ap_
+*.aab
+*.aar
+*.so
+*.dex
+*.dSYM
+
+# Debugging and profiling files
+captures/
+.profiler/
+
+# Log files
+*.log
+
+# Keystore files (NEVER commit production keystores!)
+# For debug builds, it's often generated, so excluding is fine.
+debug.keystore
+*.jks
+*.keystore
+
+# Generated files by AAPT
+aapt_generated_proguard_file
+
+# Native development (NDK) related files
+.externalNativeBuild/
+.cxx/
+
+# Gradle generated files
+gradle-app.iml
+gradle.properties.gpg
+
+### AndroidStudio ###
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/libraries/
+.idea/gradle.xml
+.idea/assetWizardSettings.xml
+.idea/compiler.xml
+.idea/encodings.xml
+.idea/jarRepositories.xml
+.idea/modules.xml
+.idea/vcs.xml # Often useful to commit, but if you have a complex setup, exclude.
+.idea/codeStyles/
+.idea/shelf/
+.idea/dictionaries/
+.idea/sonarlint/
+.idea/caches/
+.idea/scopes/
+.idea/modules/
+.idea/fileTemplates/
+.idea/inspectionProfiles/
+
+# Gradle user-specific cache directory
+.gradle/
+
+# Build directory for all modules
+*/build/
+build/
+
+# Local configuration files (SDK location, etc.)
+local.properties
+
+# Android Studio generated files for testing
+test-results/
+.idea/testDescriptors.xml
+
+# If you use Fabric/Crashlytics, this file is generated
+crashlytics-build.properties
+
+### Gradle ###
+.gradle
+/build/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Ignore Gradle build output directory
+!gradle/wrapper/gradle-wrapper.jar # Keep the wrapper JAR for consistent builds
+/gradle/wrapper/.gradle/
+/gradle-cache/
+
+# Android Studio's system files
+.idea/
+.idea/.name
+
+# Mac OS X
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# Directories of disposable data
+.fseventsd
+.VolumeIcon.icns
+.com.apple.timemachine.donotbackup
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Visual Studio Code (if used alongside Android Studio)
+.vscode/
+
+# Keep the Gradle wrapper jar, but ignore the wrapper's local cache.
+# The `!` means "do not ignore this file/directory".
+!gradle/wrapper/gradle-wrapper.jar
+gradle/wrapper/.gradle/

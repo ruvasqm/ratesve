@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">RatesVe</string>
+    <string name="app_widget_description">Shows live currency rates for VED, Binance USDT, and Satoshi value.</string>
+    <string name="desc_ved_icon">Venezuelan Bolivar icon</string>
+    <string name="desc_binance_icon">Binance icon</string>
+    <string name="desc_satoshi_icon">Satoshi icon</string>
+    <string name="api_key_is_set">API Key is set.</string>
+    <string name="api_key_needed_for_satoshi_rate_please_enter_and_save_your_key">API Key needed for Satoshi rate. Please enter and save your key.</string>
+    <string name="api_key_status">API Key Status</string>
+    <string name="enter_coinmarketcap_api_key">Enter CoinMarketCap API Key</string>
+    <string name="save_api_key">Save API Key</string>
+    <string name="edit_api_key">Edit API Key</string>
+    <string name="manual_refresh_rates">Manual Refresh Rates</string>
+    <string name="currency_widget_acknowledgments">Currency Widget Acknowledgments</string>
+    <string name="data_sources">Data Sources:</string>
+    <string name="bcv_https_www_bcv_org_ve">- BCV: https://www.bcv.org.ve</string>
+    <string name="binance_p2p_https_p2p_binance_com">- Binance P2P: https://p2p.binance.com</string>
+    <string name="satoshi_bitcoin_coinmarketcap_api">- Satoshi (Bitcoin): CoinMarketCap API</string>
+    <string name="libraries_used">Libraries Used:</string>
+    <string name="okhttp_for_network_requests">- OkHttp (for network requests)</string>
+    <string name="gson_for_json_parsing">- Gson (for JSON parsing)</string>
+    <string name="jsoup_for_html_parsing">- Jsoup (for HTML parsing)</string>
+    <string name="workmanager_for_background_tasks">- WorkManager (for background tasks)</string>
+</resources>

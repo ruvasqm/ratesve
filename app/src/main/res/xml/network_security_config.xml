@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="false">  <!-- Changed to false if pinning for HTTPS -->
+        <domain includeSubdomains="true">www.bcv.org.ve</domain>
+        <trust-anchors>
+            <!-- Trust the specific certificate for this domain -->
+            <certificates src="@raw/bcv_org_ve_cert" />
+            <!-- You can also include system CAs as a fallback, but for a self-signed cert,
+                 pinning to the specific cert is usually what you want.
+                 If you wanted to trust your cert AND system CAs for this domain:
+                 <certificates src="system" />
+            -->
+        </trust-anchors>
+    </domain-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>
