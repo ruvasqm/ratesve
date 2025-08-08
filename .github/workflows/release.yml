@@ -73,10 +73,20 @@ jobs:
 
           mv "$ORIGINAL_APK_PATH" "$NEW_APK_PATH"
           echo "RENAMED_APK_PATH=$NEW_APK_PATH" >> "$GITHUB_OUTPUT"
-
-      - name: Upload Release APK
-        uses: actions/upload-artifact@v4
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2 
         with:
-          name: ratesve-release-apk 
-          path: ${{ steps.rename_apk.outputs.RENAMED_APK_PATH }} 
-          if-no-files-found: error
+          tag_name: ${{ github.ref }} 
+          name: Release ${{ github.ref_name }} 
+          body: |
+            ## RatesVe App Release ${{ github.ref_name }}
+
+            This release includes:
+            *   Automatic versioning based on tag.
+            *   Bug fixes and performance improvements.
+          draft: true 
+          prerelease: true 
+          files: ${{ steps.rename_apk.outputs.RENAMED_APK_PATH }} 
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
