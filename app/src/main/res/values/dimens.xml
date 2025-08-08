@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Widget Root Padding -->
+    <dimen name="widget_root_padding">16dp</dimen>
+
+    <!-- Horizontal Padding for each item (BCV, Binance, Satoshi) -->
+    <dimen name="widget_item_padding_horizontal">4dp</dimen>
+
+    <!-- Icon Size (e.g., 40dp for a larger device) -->
+    <dimen name="widget_icon_size">40dp</dimen>
+
+    <!-- Text Size for Values (e.g., 20sp for a larger device) -->
+    <dimen name="widget_text_size_value">20sp</dimen>
+
+    <!-- Margin Top for Text (between icon and value) -->
+    <dimen name="widget_text_margin_top">4dp</dimen>
+
+    <!-- Add any other fixed dimensions here as needed -->
+</resources>

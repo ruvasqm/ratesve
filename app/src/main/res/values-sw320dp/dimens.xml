@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Smaller dimensions for devices with smallest width 320dp -->
+    <dimen name="widget_root_padding">12dp</dimen> <!-- Reduce padding slightly -->
+    <dimen name="widget_item_padding_horizontal">2dp</dimen> <!-- Less horizontal padding -->
+    <dimen name="widget_icon_size">32dp</dimen> <!-- Smaller icons -->
+    <dimen name="widget_text_size_value">16sp</dimen> <!-- Smaller text -->
+    <dimen name="widget_text_margin_top">2dp</dimen> <!-- Smaller margin -->
+</resources>

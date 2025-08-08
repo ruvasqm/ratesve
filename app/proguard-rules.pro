@@ -74,11 +74,29 @@
 # Keep your specific worker class. `proguard-android-optimize.txt` should get this, but being explicit is fine.
 -keep class com.example.ratesve.CurrencyFetchWorker { *; }
 
-# ----- AndroidX Security Crypto (EncryptedSharedPreferences) -----
-# This library relies on reflection for encryption. It should provide its own ProGuard rules,
-# but if you encounter issues with EncryptedSharedPreferences, this might be needed.
-# Usually, it's covered.
-# -keep class androidx.security.** { *; }
+# ----- Rules for androidx.security:security-crypto (EncryptedSharedPreferences) -----
+# This library uses reflection heavily for KeyStore interactions.
+# While it *should* provide its own consumer rules, sometimes explicit rules are needed,
+# especially if other optimizations interfere.
+
+# Keep all classes and members within the androidx.security package.
+# This is generally safe and robust for libraries that rely on reflection.
+-keep class androidx.security.** { *; }
+-keep interface androidx.security.** { *; }
+
+# Specifically keeping MasterKeys and EncryptedSharedPreferences classes
+# (Though covered by the broad rule above, being explicit doesn't hurt)
+-keep class androidx.security.crypto.MasterKeys { *; }
+-keep class androidx.security.crypto.EncryptedSharedPreferences { *; }
+
+# Important attributes for reflection and inner classes if any are used internally
+-keepattributes Signature, InnerClasses, EnclosingMethod
+
+# Suppress warnings for potential issues in these packages (often related to reflection)
+# Only add if you see specific warnings, but can be helpful for initial debugging.
+-dontwarn androidx.security.**
+-dontwarn java.security.**
+-dontwarn javax.crypto.**
 
 # Reminder: `proguard-android-optimize.txt` handles many common cases like
 # keeping Activities, Services, Parcelables, R classes, etc.

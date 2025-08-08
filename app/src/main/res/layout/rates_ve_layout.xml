@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="@dimen/widget_root_padding"
     android:gravity="center_horizontal"
     android:background="@drawable/widget_background_themed">
 
@@ -22,13 +22,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp">
+            android:paddingStart="@dimen/widget_item_padding_horizontal"
+            android:paddingEnd="@dimen/widget_item_padding_horizontal">
 
             <ImageView
                 android:id="@+id/bcv_icon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="@dimen/widget_icon_size"
+                android:layout_height="@dimen/widget_icon_size"
                 android:src="@drawable/ic_ved"
                 android:contentDescription="@string/desc_ved_icon" />
 
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:text="N/A"
                 android:textColor="?android:attr/textColorPrimary"
-                android:textSize="20sp"
+                android:textSize="@dimen/widget_text_size_value"
                 android:textStyle="bold"
                 android:layout_marginTop="4dp" />
         </LinearLayout>
@@ -51,13 +51,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp">
+            android:paddingStart="@dimen/widget_item_padding_horizontal"
+            android:paddingEnd="@dimen/widget_item_padding_horizontal">
 
             <ImageView
                 android:id="@+id/binance_icon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="@dimen/widget_icon_size"
+                android:layout_height="@dimen/widget_icon_size"
                 android:src="@drawable/ic_binance"
                 android:contentDescription="@string/desc_binance_icon" />
 
@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:text="N/A"
                 android:textColor="?android:attr/textColorPrimary"
-                android:textSize="20sp"
+                android:textSize="@dimen/widget_text_size_value"
                 android:textStyle="bold"
                 android:layout_marginTop="4dp" />
         </LinearLayout>
@@ -80,13 +80,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp">
+            android:paddingStart="@dimen/widget_item_padding_horizontal"
+            android:paddingEnd="@dimen/widget_item_padding_horizontal">
 
             <ImageView
                 android:id="@+id/satoshi_icon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="@dimen/widget_icon_size"
+                android:layout_height="@dimen/widget_icon_size"
                 android:src="@drawable/ic_satoshi"
                 android:contentDescription="@string/desc_satoshi_icon" />
 
@@ -96,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:text="N/A"
                 android:textColor="?android:attr/textColorPrimary"
-                android:textSize="20sp"
+                android:textSize="@dimen/widget_text_size_value"
                 android:textStyle="bold"
                 android:layout_marginTop="4dp" />
         </LinearLayout>
