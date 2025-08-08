@@ -5,32 +5,61 @@ plugins {
 }
 
 android {
-    namespace = "com.example.ratesve" // TODO: Change this to your actual unique package name (e.g., com.yourcompany.ratesve)
+    namespace = "com.example.ratesve"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.ratesve" // TODO: Change this to your actual unique application ID
+        applicationId = "com.example.ratesve"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = System.getenv("APP_VERSION_CODE")?.toInt() ?: 420
+        versionName = System.getenv("APP_VERSION_NAME") ?: "4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("release") {
+            val storeFileEnv = System.getenv("RELEASE_KEYSTORE")
+            val storePasswordEnv = System.getenv("RELEASE_KEYSTORE_PASSWORD")
+            val keyAliasEnv = System.getenv("RELEASE_KEY_ALIAS")
+            val keyPasswordEnv = System.getenv("RELEASE_KEY_PASSWORD")
+
+            if (storeFileEnv != null && storeFileEnv.isNotEmpty() &&
+                storePasswordEnv != null && storePasswordEnv.isNotEmpty() &&
+                keyAliasEnv != null && keyAliasEnv.isNotEmpty() &&
+                keyPasswordEnv != null && keyPasswordEnv.isNotEmpty()) {
+
+                storeFile = project.file(storeFileEnv) // Use project.file() to resolve relative paths correctly
+                storePassword = storePasswordEnv
+                keyAlias = keyAliasEnv
+                keyPassword = keyPasswordEnv
+            } else {
+                // Optionally handle the case where env vars are not set for local non-CI builds
+                // Or throw an error if they are strictly required for release builds
+                println("Warning: Release signing environment variables not fully set. Build might fail or use defaults.")
+                // You might have your local.properties fallback logic here if desired for non-CI local builds
+            }
+        }
+    }
+
     buildTypes {
         release {
-            isMinifyEnabled = false // In Kotlin DSL, it's 'isMinifyEnabled'
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
-        // You can also define a debug build type if needed, though often the defaults are fine
+
+
         debug {
-            // Example: isMinifyEnabled = false
+            isMinifyEnabled = false
         }
     }
+
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

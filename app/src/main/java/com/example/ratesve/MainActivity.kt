@@ -54,6 +54,10 @@ class MainActivity : AppCompatActivity() {
         btnSaveApiKey = findViewById(R.id.saveApiKeyButton)
         btnEditApiKey = findViewById(R.id.btnEditApiKey)
         btnManualRefresh = findViewById(R.id.btnManualRefresh)
+        val tvAppVersion: TextView = findViewById(R.id.tvAppVersion)
+        val versionName = BuildConfig.VERSION_NAME
+        val versionCode = BuildConfig.VERSION_CODE
+        tvAppVersion.text = "Version: $versionName (Build: $versionCode) - pix"
 
         executor = ContextCompat.getMainExecutor(this)
 

@@ -1,0 +1,82 @@
+name: Android Release APK on Tag
+
+on:
+  push:
+    tags:
+      - 'v*.*.*' 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Get version from tag and set environment variables
+        id: set_version_env 
+        run: |
+          TAG_NAME="${{ github.ref_name }}" 
+          VERSION_STRING="${TAG_NAME#v}" 
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION_STRING"
+          VERSION_CODE=$(( (MAJOR * 10000) + (MINOR * 100) + PATCH ))
+          VERSION_NAME="$MAJOR"
+          echo "Detected Tag: $TAG_NAME"
+          echo "Parsed Version String: $VERSION_STRING"
+          echo "MAJOR: $MAJOR, MINOR: $MINOR, PATCH: $PATCH"
+          echo "Calculated APP_VERSION_NAME: $VERSION_NAME"
+          echo "Calculated APP_VERSION_CODE: $VERSION_CODE"
+          echo "APP_VERSION_NAME=$VERSION_NAME" >> "$GITHUB_ENV"
+          echo "APP_VERSION_CODE=$VERSION_CODE" >> "$GITHUB_ENV"
+          echo "apk_filename=ratesve-${VERSION_STRING}.apk" >> "$GITHUB_OUTPUT"
+          
+      - name: Decode Keystore and set path for Gradle
+        env:
+          RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE }}
+        run: |
+          echo "$RELEASE_KEYSTORE_BASE64" | base64 --decode > ${{ github.workspace }}/app/release.jks
+          echo "KEYSTORE_FILE_PATH=${{ github.workspace }}/app/release.jks" >> "$GITHUB_ENV"
+          echo "Keystore decoded to ${{ github.workspace }}/app/release.jks"
+
+      - name: Build Release APK
+        env:
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+          
+        run: |
+          echo "Building with versionName: ${{ env.APP_VERSION_NAME }}"
+          echo "Building with versionCode: ${{ env.APP_VERSION_CODE }}"
+          ./gradlew :app:assembleRelease
+
+      - name: Rename APK for release
+        id: rename_apk 
+        run: |
+          ORIGINAL_APK_PATH="${{ github.workspace }}/app/build/outputs/apk/release/app-release.apk"
+          TARGET_DIR="$(dirname "$ORIGINAL_APK_PATH")"
+          NEW_APK_PATH="$TARGET_DIR/${{ steps.set_version_env.outputs.apk_filename }}"
+
+          echo "Original APK: $ORIGINAL_APK_PATH"
+          echo "New APK Name: $NEW_APK_PATH"
+
+          mv "$ORIGINAL_APK_PATH" "$NEW_APK_PATH"
+          echo "RENAMED_APK_PATH=$NEW_APK_PATH" >> "$GITHUB_OUTPUT"
+
+      - name: Upload Release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ratesve-release-apk 
+          path: ${{ steps.rename_apk.outputs.RENAMED_APK_PATH }} 
+          if-no-files-found: error

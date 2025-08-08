@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="widget_background_day">#F0F0F0</color> <!-- Light gray for day -->
-    <color name="widget_text_color_day">#000000</color> <!-- Black for day -->
+    <color name="widget_text_color_day">#000000</color>
+    <color name="widget_text_color_night">#FFFFFF</color>
+    <color name="widget_background_night">#000000</color> <!-- Default for night, can be adjusted -->
 </resources>
