@@ -47,7 +47,7 @@ jobs:
           RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE }}
         run: |
           echo "$RELEASE_KEYSTORE_BASE64" | base64 --decode > ${{ github.workspace }}/app/release.jks
-          echo "KEYSTORE_FILE_PATH=${{ github.workspace }}/app/release.jks" >> "$GITHUB_ENV"
+          echo "RELEASE_KEYSTORE=${{ github.workspace }}/app/release.jks" >> "$GITHUB_ENV"
           echo "Keystore decoded to ${{ github.workspace }}/app/release.jks"
 
       - name: Build Release APK
