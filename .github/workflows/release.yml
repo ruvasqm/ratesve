@@ -6,9 +6,9 @@ on:
       - 'v*.*.*' 
 
 jobs:
-  permissions:
-    contents: write
   build:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
 
     steps:
