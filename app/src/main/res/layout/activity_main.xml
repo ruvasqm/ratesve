@@ -40,6 +40,13 @@
         android:layout_marginTop="16dp"
         android:text="@string/manual_refresh_rates" />
 
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switchNotificationWidget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Enable Rate Notification Widget" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

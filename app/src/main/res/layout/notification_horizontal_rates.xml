@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_horizontal"
+    android:padding="8dp">
+
+    <!-- BCV Rate -->
+    <LinearLayout
+        android:id="@+id/notif_bcv_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:gravity="center_vertical"
+        android:layout_marginRight="8dp">
+
+        <ImageView
+            android:id="@+id/notif_bcv_icon"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_ved"
+            android:contentDescription="BCV"
+            android:scaleType="fitCenter"/>
+        <TextView
+            android:id="@+id/notif_bcv_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="N/A"
+            android:textSize="14sp"
+            android:layout_marginStart="8dp"
+            android:textAppearance="@style/TextAppearance.Compat.Notification.Line2" />
+    </LinearLayout>
+
+    <!-- Euro Rate -->
+    <LinearLayout
+        android:id="@+id/notif_euro_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:gravity="center_vertical"
+        android:layout_marginRight="8dp">
+        <ImageView
+            android:id="@+id/notif_euro_icon"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_euro"
+            android:contentDescription="Euro"
+            android:scaleType="fitCenter"/>
+        <TextView
+            android:id="@+id/notif_euro_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="N/A"
+            android:textSize="14sp"
+            android:layout_marginStart="8dp"
+            android:textAppearance="@style/TextAppearance.Compat.Notification.Line2" />
+    </LinearLayout>
+
+    <!-- Binance Rate -->
+    <LinearLayout
+        android:id="@+id/notif_binance_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:gravity="center_vertical"
+        android:layout_marginRight="8dp">
+        <ImageView
+            android:id="@+id/notif_binance_icon"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_binance"
+            android:contentDescription="Binance"
+            android:scaleType="fitCenter"/>
+        <TextView
+            android:id="@+id/notif_binance_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="N/A"
+            android:textSize="14sp"
+            android:layout_marginStart="8dp"
+            android:textAppearance="@style/TextAppearance.Compat.Notification.Line2" />
+    </LinearLayout>
+
+</LinearLayout>

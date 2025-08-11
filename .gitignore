@@ -136,3 +136,4 @@ $RECYCLE.BIN/
 !gradle/wrapper/gradle-wrapper.jar
 gradle/wrapper/.gradle/
 releasescript.sh
+localreleasescript.sh

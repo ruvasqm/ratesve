@@ -75,12 +75,14 @@ class RatesVeProvider : AppWidgetProvider() {
             }
             val textColor = ContextCompat.getColor(context, textColorRes)
             views.setTextColor(R.id.bcv_value, textColor)
+            views.setTextColor(R.id.euro_value, textColor)
             views.setTextColor(R.id.binance_value, textColor)
             views.setTextColor(R.id.satoshi_value, textColor)
 
 
             val prefs = context.getSharedPreferences("CurrencyWidget", Context.MODE_PRIVATE)
             val bcv = prefs.getString("bcv_value", "N/A")
+            val euro = prefs.getString("euro_value", "N/A")
             val binance = prefs.getString("binance_value", "N/A")
             val satoshi = prefs.getString("satoshi_value", "N/A")
 
@@ -91,6 +93,15 @@ class RatesVeProvider : AppWidgetProvider() {
                 views.setViewVisibility(R.id.bcv_layout, View.VISIBLE)
                 views.setTextViewText(R.id.bcv_value, bcv)
             }
+
+            // Euro Rate
+            if (euro == "N/A") {
+                views.setViewVisibility(R.id.euro_layout, View.GONE)
+            } else {
+                views.setViewVisibility(R.id.euro_layout, View.VISIBLE)
+                views.setTextViewText(R.id.euro_value, euro)
+            }
+
 
             // Binance Rate
             if (binance == "N/A") {

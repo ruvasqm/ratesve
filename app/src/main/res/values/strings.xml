@@ -5,12 +5,13 @@
     <string name="desc_binance_icon">Binance icon</string>
     <string name="desc_satoshi_icon">Satoshi icon</string>
     <string name="api_key_is_set">API Key is set.</string>
-    <string name="api_key_needed_for_satoshi_rate_please_enter_and_save_your_key">API Key needed for Satoshi rate. Please enter and save your key.</string>
+    <string name="api_key_not_set_satoshi_optional">API Key not set. Satoshi rate will not be shown (Optional).</string>
     <string name="api_key_status">API Key Status</string>
-    <string name="enter_coinmarketcap_api_key">Enter CoinMarketCap API Key</string>
+    <string name="enter_coinmarketcap_api_key">Enter CoinMarketCap API Key (Optional)</string>
     <string name="save_api_key">Save API Key</string>
     <string name="edit_api_key">Edit API Key</string>
     <string name="manual_refresh_rates">Manual Refresh Rates</string>
+    <string name="enable_rate_notification_widget">Enable Rate Notification Widget</string>
     <string name="currency_widget_acknowledgments">Currency Widget Acknowledgments</string>
     <string name="data_sources">Data Sources:</string>
     <string name="bcv_https_www_bcv_org_ve">- BCV: https://www.bcv.org.ve</string>

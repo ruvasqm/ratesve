@@ -43,6 +43,35 @@
                 android:layout_marginTop="4dp" />
         </LinearLayout>
 
+        <!-- EURO -->
+        <LinearLayout
+            android:id="@+id/euro_layout"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:paddingStart="@dimen/widget_item_padding_horizontal"
+            android:paddingEnd="@dimen/widget_item_padding_horizontal">
+
+            <ImageView
+                android:id="@+id/euro_icon"
+                android:layout_width="@dimen/widget_icon_size"
+                android:layout_height="@dimen/widget_icon_size"
+                android:src="@drawable/ic_euro"
+                android:contentDescription="@string/desc_ved_icon" />
+
+            <TextView
+                android:id="@+id/euro_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="N/A"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="@dimen/widget_text_size_value"
+                android:textStyle="bold"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
         <!-- Binance -->
         <LinearLayout
             android:id="@+id/binance_layout"

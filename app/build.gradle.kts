@@ -21,6 +21,7 @@ android {
     signingConfigs {
         create("release") {
             val storeFileEnv = System.getenv("RELEASE_KEYSTORE")
+
             val storePasswordEnv = System.getenv("RELEASE_KEYSTORE_PASSWORD")
             val keyAliasEnv = System.getenv("RELEASE_KEY_ALIAS")
             val keyPasswordEnv = System.getenv("RELEASE_KEY_PASSWORD")

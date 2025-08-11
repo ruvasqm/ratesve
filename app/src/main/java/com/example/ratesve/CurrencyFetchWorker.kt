@@ -1,8 +1,11 @@
 package com.example.ratesve
+
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.util.Log
+import android.view.View
 import android.widget.RemoteViews
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -18,8 +21,9 @@ import org.jsoup.Jsoup
 import java.io.IOException
 import java.text.DecimalFormat
 import java.util.Locale
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
+import android.app.PendingIntent
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class CurrencyFetchWorker(appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
@@ -27,76 +31,126 @@ class CurrencyFetchWorker(appContext: Context, workerParams: WorkerParameters) :
     private val client = OkHttpClient()
     private val gson = Gson()
     private val decimalFormat = DecimalFormat("0.00").apply {
-        decimalFormatSymbols = java.text.DecimalFormatSymbols(Locale.US) // Ensure dot as decimal separator
+        decimalFormatSymbols = java.text.DecimalFormatSymbols(Locale.US)
     }
 
     companion object {
         const val WORK_NAME = "CurrencyFetchWork"
-        private const val API_KEY_ALIAS = "api_key"
-        private const val PREFS_FILE_NAME = "secret_shared_prefs"
     }
 
     override suspend fun doWork(): Result {
-        var bcvRate: Double? = null
-        var binanceRate: Double? = null
-        var satoshiRate: Double? = null
+        Log.d("CurrencyWorker", "Starting currency fetch work.")
+        var bcvRateValue: Double? = null
+        var euroRateValue: Double? = null
+        var binanceRateValue: Double? = null
+        var satoshiRateValue: Double? = null
 
         try {
-            bcvRate = fetchBcvRate()
+            val (bcv, euro) = fetchBcvRates()
+            bcvRateValue = bcv
+            euroRateValue = euro
+            Log.d("CurrencyWorker", "BCV Rate: $bcvRateValue, Euro Rate: $euroRateValue")
         } catch (e: Exception) {
-            Log.e("CurrencyWorker", "Error fetching BCV rate: ${e.message}", e)
+            Log.e("CurrencyWorker", "Error fetching BCV rates: ${e.message}", e)
         }
 
         try {
-            binanceRate = fetchBinanceRate()
+            binanceRateValue = fetchBinanceRate()
+            Log.d("CurrencyWorker", "Binance Rate: $binanceRateValue")
         } catch (e: Exception) {
             Log.e("CurrencyWorker", "Error fetching Binance rate: ${e.message}", e)
         }
 
-        try {
-            satoshiRate = fetchSatoshiRate()
-        } catch (e: Exception) {
-            Log.e("CurrencyWorker", "Error fetching Satoshi rate: ${e.message}", e)
+        if (CurrencyDataRepository.hasApiKey()) {
+            try {
+                satoshiRateValue = fetchSatoshiRate()
+                Log.d("CurrencyWorker", "Satoshi Rate: $satoshiRateValue")
+            } catch (e: Exception) {
+                Log.e("CurrencyWorker", "Error fetching Satoshi rate: ${e.message}", e)
+            }
+        } else {
+            Log.i("CurrencyWorker", "API key not found. Skipping Satoshi rate fetch.")
         }
 
-        val prefs = applicationContext.getSharedPreferences("CurrencyWidget", Context.MODE_PRIVATE)
-        with(prefs.edit()) {
-            putString("bcv_value", bcvRate?.let { decimalFormat.format(it) } ?: "N/A")
-            putString("binance_value", binanceRate?.let { decimalFormat.format(it) } ?: "N/A")
-            putString("satoshi_value", satoshiRate?.let { decimalFormat.format(it) } ?: "N/A")
-            apply()
-        }
+        val currentRates = CurrencyRates(
+            bcvRate = bcvRateValue?.let { decimalFormat.format(it) },
+            euroRate = euroRateValue?.let { decimalFormat.format(it) }, // Pass euroRate
+            binanceRate = binanceRateValue?.let { decimalFormat.format(it) },
+            satoshiRate = satoshiRateValue?.let { decimalFormat.format(it) }
+        )
 
-        // Update the widget
-        val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
-        val componentName = ComponentName(applicationContext, RatesVeProvider::class.java)
-        val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
+        CurrencyDataRepository.updateRates(currentRates)
+        Log.d("CurrencyWorker", "Updated CurrencyDataRepository with new rates.")
 
-        for (appWidgetId in appWidgetIds) {
-            val views = RemoteViews(applicationContext.packageName, R.layout.rates_ve_layout)
-            views.setTextViewText(R.id.bcv_value, bcvRate?.let { decimalFormat.format(it) } ?: "N/A")
-            views.setTextViewText(R.id.binance_value, binanceRate?.let { decimalFormat.format(it) } ?: "N/A")
-            views.setTextViewText(R.id.satoshi_value, satoshiRate?.let { decimalFormat.format(it) } ?: "N/A")
-            appWidgetManager.updateAppWidget(appWidgetId, views)
-        }
+        // Update the widget UI - now it can use currentRates directly if desired
+        updateAllWidgets(
+            currentRates.bcvRate,
+            currentRates.euroRate, // Use from currentRates
+            currentRates.binanceRate,
+            currentRates.satoshiRate
+        )
 
         return Result.success()
     }
 
-    private fun fetchBcvRate(): Double? {
+    private fun updateAllWidgets(bcvFormatted: String?, euroFormatted: String?, binanceFormatted: String?, satoshiFormatted: String?) {
+        val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
+        val componentName = ComponentName(applicationContext, RatesVeProvider::class.java)
+        val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
+
+        if (appWidgetIds.isEmpty()) {
+            Log.d("CurrencyWorker", "No widgets to update.")
+            return
+        }
+        Log.d("CurrencyWorker", "Updating ${appWidgetIds.size} widget(s).")
+
+        for (appWidgetId in appWidgetIds) {
+            val views = RemoteViews(applicationContext.packageName, R.layout.rates_ve_layout)
+            
+            views.setTextViewText(R.id.bcv_value, bcvFormatted ?: "N/A")
+            views.setViewVisibility(R.id.bcv_layout, if (bcvFormatted == null) View.GONE else View.VISIBLE)
+
+            views.setTextViewText(R.id.euro_value, euroFormatted ?: "N/A")
+            views.setViewVisibility(R.id.euro_layout, if (euroFormatted == null) View.GONE else View.VISIBLE)
+
+            views.setTextViewText(R.id.binance_value, binanceFormatted ?: "N/A")
+            views.setViewVisibility(R.id.binance_layout, if (binanceFormatted == null) View.GONE else View.VISIBLE)
+
+            views.setTextViewText(R.id.satoshi_value, satoshiFormatted ?: "N/A")
+            views.setViewVisibility(R.id.satoshi_layout, if (satoshiFormatted == null) View.GONE else View.VISIBLE)
+
+
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            val pendingIntent = PendingIntent.getActivity(applicationContext, appWidgetId, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+            views.setOnClickPendingIntent(R.id.widget_root_layout, pendingIntent)
+
+            appWidgetManager.updateAppWidget(appWidgetId, views)
+        }
+    }
+
+    private fun fetchBcvRates(): Array<Double?> {
         val request = Request.Builder()
             .url("https://www.bcv.org.ve")
             .build()
 
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) throw IOException("Unexpected code $response")
-            val html = response.body?.string() ?: return null
+            val html = response.body?.string() ?: return arrayOf(null, null)
 
             val doc = Jsoup.parse(html)
-            val element = doc.select("div.centrado>strong").last()
-            val text = element?.text()?.trim()
+            // Verify these selectors if BCV site changes
+            val dollarElement = doc.selectFirst("#dolar strong")
+            val euroElement = doc.selectFirst("#euro strong")
 
-            return text?.replace(",", ".")?.toDoubleOrNull()
+            val bcvText = dollarElement?.text()?.trim()
+            val euroText = euroElement?.text()?.trim()
+            
+            Log.d("CurrencyWorker", "BCV HTML Scrape - Dollar Text: '$bcvText', Euro Text: '$euroText'")
+
+            return arrayOf(
+                bcvText?.replace(",", ".")?.toDoubleOrNull(),
+                euroText?.replace(",", ".")?.toDoubleOrNull()
+            )
         }
     }
 
@@ -128,7 +182,7 @@ class CurrencyFetchWorker(appContext: Context, workerParams: WorkerParameters) :
             .build()
 
         client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful) throw IOException("Unexpected code $response")
+            if (!response.isSuccessful) throw IOException("Unexpected code $response for Binance")
 
             val responseBody = if ("gzip".equals(response.header("Content-Encoding"), ignoreCase = true)) {
                 response.body?.source()?.let { source ->
@@ -137,6 +191,8 @@ class CurrencyFetchWorker(appContext: Context, workerParams: WorkerParameters) :
             } else {
                 response.body?.string()
             } ?: return null
+            
+            Log.d("CurrencyWorker", "Binance Response: $responseBody")
 
             val binanceResponse = gson.fromJson(responseBody, BinanceResponse::class.java)
             return binanceResponse.data?.firstOrNull()?.adv?.price?.toDoubleOrNull()
@@ -144,70 +200,57 @@ class CurrencyFetchWorker(appContext: Context, workerParams: WorkerParameters) :
     }
 
     private fun fetchSatoshiRate(): Double? {
-        val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-        val sharedPreferences = EncryptedSharedPreferences.create(
-            PREFS_FILE_NAME,    // Corrected: 1st argument String (file name)
-            masterKeyAlias,     // Corrected: 2nd argument String (master key alias)
-            applicationContext, // Corrected: 3rd argument Context
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-
-        val apiKey = sharedPreferences.getString(API_KEY_ALIAS, null)
-
+        val apiKey = CurrencyDataRepository.getApiKey()
         if (apiKey.isNullOrEmpty()) {
             Log.i("CurrencyWorker", "CoinMarketCap API key not found. Skipping Satoshi rate fetch.")
             return null
         }
 
         val request = Request.Builder()
-            .url("https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?id=1")
+            .url("https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?id=1") // BTC ID is 1
             .addHeader("X-CMC_PRO_API_KEY", apiKey)
             .addHeader("Accept", "application/json")
             .build()
 
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
-                Log.e("CurrencyWorker", "CoinMarketCap API Error: ${response.code} ${response.message}")
-                 // You might want to inspect response.body?.string() for more details from the API
-                throw IOException("Unexpected code ${response.code} from CoinMarketCap")
+                val errorBody = response.body?.string()
+                Log.e("CurrencyWorker", "CoinMarketCap API Error: ${response.code} ${response.message}. Body: $errorBody")
+                throw IOException("Unexpected code ${response.code} from CoinMarketCap. Body: $errorBody")
             }
             val json = response.body?.string() ?: return null
+            Log.d("CurrencyWorker", "CoinMarketCap Response: $json")
 
             val satoshiResponse = gson.fromJson(json, SatoshiResponse::class.java)
-            val btcPriceUsd = satoshiResponse.data?.get("1")?.quote?.usd?.price ?: return null
-            return 100_000_000.0 / btcPriceUsd
+            val btcPriceUsd = satoshiResponse.data?.get("1")?.quote?.usd?.price
+            return if (btcPriceUsd != null && btcPriceUsd > 0) {
+                 (100_000_000.0 / btcPriceUsd)  // Satoshis per USD.
+            } else {
+                null
+            }
         }
     }
 
-    //region Data Classes for JSON Parsing
     data class BinanceResponse(
         val data: List<BinanceData>?
     )
-
     data class BinanceData(
         val adv: BinanceAdv?
     )
-
     data class BinanceAdv(
         val price: String?
     )
-
     data class SatoshiResponse(
         val data: Map<String, CryptoData>?
     )
-
     data class CryptoData(
         val quote: QuoteData?
     )
-
     data class QuoteData(
         @SerializedName("USD")
         val usd: UsdQuote?
     )
-
     data class UsdQuote(
         val price: Double?
     )
-    //endregion
 }
