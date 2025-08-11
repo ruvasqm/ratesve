@@ -87,14 +87,6 @@ class RateNotificationService : Service() {
         notificationLayout.setTextViewText(R.id.notif_binance_value, rates?.binanceRate ?: "N/A")
         notificationLayout.setViewVisibility(R.id.notif_binance_layout, if (rates?.binanceRate != null) View.VISIBLE else View.GONE)
 
-        // Satoshi Rate
-        if (CurrencyDataRepository.hasApiKey()) {
-            notificationLayout.setTextViewText(R.id.notif_satoshi_value, rates?.satoshiRate ?: "N/A")
-            notificationLayout.setViewVisibility(R.id.notif_satoshi_layout, View.VISIBLE)
-        } else {
-            notificationLayout.setViewVisibility(R.id.notif_satoshi_layout, View.GONE)
-        }
-
         val notificationIntent = Intent(this, MainActivity::class.java)
         notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         val pendingIntent = PendingIntent.getActivity(
